@@ -1,2 +1,4 @@
 # ignore everything in data folder
 /data/*
+# ignore everything in /lstm_mox/checkpoints
+/lstm_mox/checkpoints/*

@@ -173,18 +173,26 @@ def plot_metrics(training_losses, validation_rmses, epoch, session_checkpoint_di
 # Check if CUDA is available, if not, check for MPS (Metal Performance Shaders for Apple Silicon), otherwise use CPU
 
 # load aligned_df from path
-file_path = "aligned_df.pq"
-data_set = pd.read_parquet(file_path)
+# file_path = "aligned_df.pq"
+# data_set = pd.read_parquet(file_path)
 
 
 def main():
+    """ include a config file as json file with the session timestamp that includes hyperparameter settings 
+    features, target_column, sequence_length, step_size, batch_size, hidden_size, num_layers, num_classes, learning_rate,
+    criterion, optimizer, num_epochs, 
+    """
+
+
+
     device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     
-    file_path = "aligned_df.pq"
+    file_path = "../data/aligned_df_with_water_ratio.pq"
     data_set = pd.read_parquet(file_path)
 
     features = ['timestamp_bin', 'A1_Resistance', 'A1_Resistance_diff']
-    target_column = 'resistance_ratio'
+    # target_column = 'resistance_ratio'
+    target_column = 'water_ratio'
     sequence_length = 100
     step_size = 1
     sequences_np, targets_np = sequence_generate(sequence_length, data_set, features, target_column, step_size)
@@ -206,7 +214,7 @@ def main():
     learning_rate = 0.0001
     criterion, optimizer = setup_training(model, learning_rate=learning_rate, device=device)
 
-    num_epochs = 10
+    num_epochs = 100
     checkpoint_dir = './checkpoints'
     ensure_dir(checkpoint_dir)
     session_timestamp = time.strftime("%Y%m%d-%H%M%S")
